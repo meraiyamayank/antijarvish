@@ -1,13 +1,45 @@
 # Deployment Documentation
 
-## Overview
-Deployment, containerization, and infrastructure guides.
+## 1. Quick Start (Local Development)
 
-## Local & Docker Setup
-Guidelines and Docker compose profiles for local development and staging environments.
+### Backend
+```bash
+# Activate virtual environment
+.\src\backend\.venv\Scripts\Activate.ps1
 
-## CI/CD Pipeline
-Continuous integration and continuous deployment workflows via GitHub Actions (`lint` → `typecheck` → `test` → `build` → `docker` → `deploy`).
+# Run migrations and seed demo accounts
+python src/backend/manage.py migrate
+python src/backend/manage.py seed_data
 
-## Cloud Infrastructure (AWS)
-Infrastructure specifications, Terraform modules, and environment configs.
+# Start server
+python src/backend/manage.py runserver 127.0.0.1:8000
+```
+
+### Frontend
+```bash
+cd src/frontend
+npm run dev
+# Accessible at http://localhost:3000
+```
+
+---
+
+## 2. Docker Orchestration
+
+Run all three services (PostgreSQL, Django API, Next.js frontend) with a single command:
+```bash
+docker compose up --build
+```
+
+- **Frontend**: `http://localhost:3000`
+- **Backend API**: `http://localhost:8000`
+- **Database**: `localhost:5432`
+
+---
+
+## 3. Pre-Seeded Demo Credentials
+
+| Role | Email | Password | Access Level |
+| :--- | :--- | :--- | :--- |
+| **Administrator** | `admin@jarvis.local` | `AdminPassword123!` | System settings, User RBAC governance |
+| **Member** | `member@jarvis.local` | `MemberPassword123!` | Personal project metrics, API usage |

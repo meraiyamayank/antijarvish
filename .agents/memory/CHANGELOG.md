@@ -3,28 +3,26 @@
 ## Unreleased
 
 ### Added
-- Initialized JARVIS v1 autonomous engineering framework for Antigravity.
-- Established `AGENTS.md` permanent operating contract.
-- Added modular behavioral rules in `.agents/rules/`:
-  - `00-jarvis-core.md`: Always-on autonomous engineering loop.
-  - `01-architecture.md`: Clean architecture and service boundaries.
-  - `02-frontend.md`: Modern responsive UI, React/Next.js conventions.
-  - `03-backend.md`: Layered architecture, Django & Express standards.
-  - `04-database.md`: Migrations, relational integrity, and safe schema handling.
-  - `05-api.md`: Standardized JSON API responses and status codes.
-  - `06-testing.md`: Verification protocols, linting, and regression testing.
-  - `07-security.md`: Secrets management, input validation, and security review.
-  - `08-devops.md`: Docker, AWS, CI/CD, and infrastructure reproducibility.
-- Created `/jarvis` orchestrator skill in `.agents/skills/jarvis/SKILL.md`.
-- Configured persistent memory files (`PROJECT.md`, `DECISIONS.md`, `TASKS.md`, `CHANGELOG.md`).
-- Added baseline `.agents/mcp_config.json`.
-- Scaffolded project documentation templates under `docs/`.
-
-### Changed
-
-### Fixed
+- **Backend Core**: Django REST Framework API engine in `src/backend`.
+- **Authentication**: JWT authentication with `djangorestframework-simplejwt`, token refresh rotation, and custom claims.
+- **RBAC**: Custom User model supporting `ADMIN` and `MEMBER` roles with custom permission guards (`IsAdminUserRole`, `IsMemberOrAdmin`).
+- **Standardized API Contract**: Enforced `{ success, data/error, message }` responses via custom exception handler adhering to `05-api.md`.
+- **Database Seeder**: Added `python manage.py seed_data` command creating demo Administrator and Member accounts.
+- **Backend Tests**: 8 unit and integration tests using `pytest-django` covering registration, authentication, RBAC boundaries, and stats.
+- **Frontend App**: Next.js 14 App Router in `src/frontend` with TypeScript and Tailwind CSS.
+- **Design System**: Dark mode SaaS interface with glassmorphism panels, gradient accents, and responsive layout.
+- **Auth Context**: Client-side `AuthContext` with session hydration, login, register, and logout handling.
+- **Dashboards**:
+  - Member Dashboard (`/dashboard`) displaying personal metrics, service health, and API tokens.
+  - Admin Dashboard (`/admin`) displaying revenue, uptime, total users, and interactive user role management.
+- **DevOps**:
+  - `docker-compose.yml` orchestrating PostgreSQL 16, Django API, and Next.js frontend with health checks.
+  - Multi-stage Dockerfiles for backend and frontend.
+  - GitHub Actions CI/CD workflow (`.github/workflows/ci.yml`).
+- **Documentation**: Updated `docs/architecture.md`, `docs/api.md`, and `docs/deployment.md`.
 
 ### Security
-- Secret protection conventions enforced across rules and memory.
-
-### Infrastructure
+- Passwords hashed using PBKDF2 with Django default validators.
+- JWT access tokens set to 60-minute expiration with separate refresh tokens.
+- CORS configured with credentials allowed.
+- Environment variables separated from code via `.env` and `.gitignore`.

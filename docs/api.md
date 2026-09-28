@@ -1,42 +1,64 @@
 # API Documentation
 
-## Overview
-Standard specifications and endpoints for the application REST API.
+## Base URL
+- Local Dev: `http://localhost:8000/api`
+- Production: `https://api.yourdomain.com/api`
 
-## Response Format
+## Response Specification
+All endpoints strictly adhere to the project API contract (`05-api.md`):
 
-### Success
+### Success Response
 ```json
 {
   "success": true,
   "data": {},
-  "message": "Operation successful"
+  "message": "Human readable description."
 }
 ```
 
-### Error
+### Error Response
 ```json
 {
   "success": false,
   "error": {
-    "code": "ERROR_CODE",
-    "message": "Detailed error message",
+    "code": "VALIDATION_ERROR | AUTHENTICATION_FAILED | PERMISSION_DENIED | NOT_FOUND | API_ERROR",
+    "message": "Clear explanation of failure.",
     "details": {}
   }
 }
 ```
 
-## Standard Status Codes
-- `200 OK`: Request succeeded.
-- `201 Created`: Resource created successfully.
-- `400 Bad Request`: Invalid payload or malformed request.
-- `401 Unauthorized`: Authentication required or invalid token.
-- `403 Forbidden`: Authenticated user lacks permission.
-- `404 Not Found`: Requested resource does not exist.
-- `409 Conflict`: Conflict with current state of resource.
-- `422 Unprocessable Entity`: Request validation failure.
-- `429 Too Many Requests`: Rate limit exceeded.
-- `500 Internal Server Error`: Unhandled server error.
+---
 
 ## Endpoints
-*Document endpoints as features are implemented.*
+
+### 1. Health Probe
+- **`GET /api/health/`**
+  - **Permissions**: Public (`AllowAny`)
+  - **Response**: `{ "success": true, "data": { "status": "healthy" } }`
+
+### 2. Authentication
+- **`POST /api/auth/register/`**
+  - **Payload**: `{ "email": "user@example.com", "password": "...", "password_confirm": "...", "first_name": "...", "last_name": "..." }`
+  - **Response**: `201 Created` with created user details.
+- **`POST /api/auth/login/`**
+  - **Payload**: `{ "email": "user@example.com", "password": "..." }`
+  - **Response**: `200 OK` with `{ "access": "JWT...", "refresh": "JWT...", "user": { ... } }`
+- **`POST /api/auth/refresh/`**
+  - **Payload**: `{ "refresh": "JWT..." }`
+  - **Response**: `200 OK` with `{ "access": "new_token" }`
+- **`GET /api/auth/me/`**
+  - **Headers**: `Authorization: Bearer <access_token>`
+  - **Response**: User profile data.
+
+### 3. Dashboard & RBAC
+- **`GET /api/dashboard/stats/`**
+  - **Permissions**: `IsAuthenticated`, `IsMemberOrAdmin`
+  - **Response**: Returns metrics tailored dynamically to `role` (`MEMBER` or `ADMIN`).
+- **`GET /api/dashboard/admin/users/`**
+  - **Permissions**: `ADMIN` only
+  - **Response**: List of all registered users.
+- **`PATCH /api/dashboard/admin/users/<int:user_id>/`**
+  - **Permissions**: `ADMIN` only
+  - **Payload**: `{ "role": "ADMIN" | "MEMBER", "is_active": true | false }`
+  - **Response**: Updated user model.
