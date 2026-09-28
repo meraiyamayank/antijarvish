@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     "apps.common",
     "apps.authentication",
     "apps.dashboard",
+    "apps.apikeys",
 ]
 
 MIDDLEWARE = [
@@ -118,6 +119,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "apps.apikeys.authentication.APIKeyAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": (
         "rest_framework.permissions.IsAuthenticated",

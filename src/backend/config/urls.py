@@ -27,4 +27,5 @@ urlpatterns = [
     path("api/health/", HealthCheckView.as_view(), name="health-check"),
     path("api/auth/", include("apps.authentication.urls")),
     path("api/dashboard/", include("apps.dashboard.urls")),
+    path("api/apikeys/", include("apps.apikeys.urls")),
 ]
